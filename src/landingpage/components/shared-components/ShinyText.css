@@ -1,0 +1,17 @@
+.shiny-text {
+  background: linear-gradient(90deg, #fff, #9333ea);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine linear infinite;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.shiny-text.disabled {
+  animation: none;
+}
