@@ -2,8 +2,11 @@ import React from "react";
 import Logo from "./Logo";
 import ButtonsSection from "./ButtonsSection";
 import HamburgerMenu from "./HamburgerMenu";
+import { useState } from "react";
+import LoginForm from "../../../login/LoginForm";
 
 export default function LandingPageNavBar() {
+  const [showLogin, setShowLogin] = useState(false);
   return (
     <div>
       <nav class="bg-[#f6f7f7] order-gray-200 dark:bg-gray-900">
@@ -12,7 +15,8 @@ export default function LandingPageNavBar() {
             <Logo />
           </div>
           <div class="flex md:order-2 space-x-3 md:space-x-3 mr-0 rtl:space-x-reverse">
-            <ButtonsSection />
+            <ButtonsSection onLoginClick={() => setShowLogin(true)} />
+            {showLogin && <LoginForm onClose={() => setShowLogin(false)} />}
           </div>
           <HamburgerMenu />
           <div
