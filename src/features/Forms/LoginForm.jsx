@@ -1,9 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import Logo from "../landingpage/components/navbar/Logo";
-import LogoLight from "../assets/logo/LOGON.png";
-import LogoDark from "../assets/logo/LOGOr.png";
+import LogoLight from "../../assets/logo/LOGON.png";
+import LogoDark from "../../assets/logo/LOGOr.png";
 
 export default function LoginForm({ onClose }) {
+  const [loginCredintials, setLoginCredintials] = useState({
+    venueEmail: "",
+    venuePassword: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Submitting Venue:", formData);
+    // TODO: Add API call
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <div className="w-xs max-w-md bg-white rounded-lg shadow dark:bg-gray-800 dark:border dark:border-gray-700">
@@ -23,12 +39,13 @@ export default function LoginForm({ onClose }) {
             Sign in to your account
           </h1>
 
-          <form className="space-y-4" action="#">
+          <form onSubmit={handleSubmit} className="space-y-4" action="#">
             <input
               type="email"
               placeholder="Email"
               required
               className="w-full p-2 border rounded"
+              onChange={handleChange}
             />
             <input
               type="password"

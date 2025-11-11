@@ -7,6 +7,9 @@ import CallToAction from "./components/body/CallToAction";
 import Footer from "./components/body/Footer";
 
 export default function LandingPage() {
+
+  //To Do Fetch Logic
+
   return (
     <div className="scroll-smooth">
       <LandingPageNavBar />

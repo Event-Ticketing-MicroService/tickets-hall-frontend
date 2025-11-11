@@ -13,32 +13,26 @@ export default function HamburgerMenu() {
         setIsOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
-    <div className="md:hidden scroll-smooth" ref={menuRef}>
-      {/* Burger Button */}
+    <div className="md:hidden relative" ref={menuRef}>
       <button
         onClick={toggleMenu}
-        className="text-gray-700 dark:text-white focus:outline-none px-1"
+        className="text-gray-700 dark:text-white focus:outline-none"
       >
         {isOpen ? (
-          <XMarkIcon className="h-7 w-7" />
+          <XMarkIcon className="h-6 w-10" />
         ) : (
-          <Bars3Icon className="h-7 w-7" />
+          <Bars3Icon className="h-6 w-10" />
         )}
       </button>
 
-      {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-14 mt-18 right-5 w-50 rounded-2xl bg-white dark:bg-gray-900 shadow-md z-20">
-          <ul className="flex flex-col items-center p-4 space-y-4">
+        <div className="absolute right-0 mt-2 w-48 rounded-lg bg-white dark:bg-gray-900 shadow-lg z-50">
+          <ul className="flex flex-col p-4 space-y-2">
             <li>
               <a
                 href="#browse-events"
@@ -50,13 +44,16 @@ export default function HamburgerMenu() {
             <li>
               <a
                 href="#how-it-works"
-                className="text-blue-700 hover:text-blue-900"
+                className="text-gray-900 dark:text-white hover:text-blue-700"
               >
                 How It Works
               </a>
             </li>
             <li>
-              <a href="#footer" className="text-blue-700 hover:text-blue-900">
+              <a
+                href="#footer"
+                className="text-gray-900 dark:text-white hover:text-blue-700"
+              >
                 Support
               </a>
             </li>
