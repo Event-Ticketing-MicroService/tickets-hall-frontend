@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import Logo from "./Logo";
 import ButtonsSection from "./ButtonsSection";
 import HamburgerMenu from "./HamburgerMenu";
@@ -7,15 +7,13 @@ import VenueRegistrationForm from "../../../Forms/VenueRegistrationForm";
 
 export default function LandingPageNavBar() {
   const [showLogin, setShowLogin] = useState(false);
-  const [activeSection, setActiveSection] = useState(""); // Track active section
+  const [activeSection, setActiveSection] = useState("");
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
 
   useEffect(() => {
     const sections = document.querySelectorAll("section");
-
     const observer = new IntersectionObserver(
       (entries) => {
-        // Get the section with the largest intersection ratio
         const visibleSection = entries.reduce(
           (maxEntry, entry) =>
             entry.isIntersecting &&
@@ -24,11 +22,9 @@ export default function LandingPageNavBar() {
               : maxEntry,
           null
         );
-        if (visibleSection) {
-          setActiveSection(visibleSection.target.id);
-        }
+        if (visibleSection) setActiveSection(visibleSection.target.id);
       },
-      { threshold: [0.5, 0.75, 1] } // adjust sensitivity
+      { threshold: [0.5, 0.75, 1] }
     );
 
     sections.forEach((section) => observer.observe(section));
@@ -44,13 +40,11 @@ export default function LandingPageNavBar() {
   };
 
   return (
-    <div className="w-screen px-10 py-3 mx-auto flex items-center justify-between bg-[#f6f7f7] dark:bg-gray-900 sticky top-0 z-50">
-      {/* Left: Logo */}
+    <div className="w-screen px-10 py-3 mx-auto flex items-center justify-center bg-[#f6f7f7] dark:bg-gray-900 sticky top-0 z-50">
       <div className="flex-shrink-0">
         <Logo width={50} height={30} />
       </div>
 
-      {/* Center Links */}
       <div className="hidden md:flex flex-1 justify-center gap-x-16 font-bold items-center">
         <button
           onClick={() => handleClick("browse-events")}
@@ -58,8 +52,7 @@ export default function LandingPageNavBar() {
             activeSection === "browse-events"
               ? "text-blue-700"
               : "text-gray-900 dark:text-white"
-          }
-          hover:cursor-pointer hover:text-blue-700`}
+          } hover:cursor-pointer hover:text-blue-700`}
         >
           Browse Events
         </button>
@@ -69,8 +62,7 @@ export default function LandingPageNavBar() {
             activeSection === "how-it-works"
               ? "text-blue-700"
               : "text-gray-900 dark:text-white"
-          }
-          hover:cursor-pointer hover:text-blue-700`}
+          } hover:cursor-pointer hover:text-blue-700`}
         >
           How It Works
         </button>
@@ -80,20 +72,17 @@ export default function LandingPageNavBar() {
             activeSection === "footer"
               ? "text-blue-700"
               : "text-gray-900 dark:text-white"
-          }
-          hover:cursor-pointer hover:text-blue-700`}
+          } hover:cursor-pointer hover:text-blue-700`}
         >
           Support
         </button>
       </div>
 
-      {/* Right Buttons + Hamburger */}
-      <div className="flex items-center gap-3 md:gap-4">
+      <div className="flex gap-3 md:gap-4">
         <ButtonsSection
           onLoginClick={() => setShowLogin(true)}
           onNewVenueClick={() => setShowRegistrationForm(true)}
         />
-
         {showLogin && <LoginForm onClose={() => setShowLogin(false)} />}
         {showRegistrationForm && (
           <VenueRegistrationForm

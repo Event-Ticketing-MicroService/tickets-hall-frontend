@@ -18,7 +18,7 @@ export default function HamburgerMenu() {
   }, []);
 
   return (
-    <div className="md:hidden relative" ref={menuRef}>
+    <div className="md:hidden flex" ref={menuRef}>
       <button
         onClick={toggleMenu}
         className="text-gray-700 dark:text-white focus:outline-none"
@@ -31,7 +31,7 @@ export default function HamburgerMenu() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 rounded-lg bg-white dark:bg-gray-900 shadow-lg z-50">
+        <div className="fixed right-5 top-10 mt-2 w-48 rounded-lg bg-white dark:bg-gray-900 shadow-lg z-50">
           <ul className="flex flex-col p-4 space-y-2">
             <li>
               <a
