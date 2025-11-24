@@ -7,8 +7,8 @@ export default function LinksSection({ onLoginClick, onNewVenueClick }) {
   return (
     <div className="flex flex-nowrap justify-end items-center gap-2">
       <Link
-        to="/attendee/events"
-        // onClick={onNewVenueClick}
+        // to="/attendee/events"
+        onClick={onNewVenueClick}
         className="whitespace-nowrap hover:cursor-pointer px-3 py-1 text-sm font-medium border-2 border-blue-700 rounded-lg text-blue-700 bg-white hover:bg-blue-100"
       >
         I'm an Attendee
