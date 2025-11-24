@@ -27,6 +27,7 @@ export default function VenueRegistrationForm({ onClose }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    console.log(formData);
   };
 
   const handleImageUpload = (images) => {
@@ -57,6 +58,7 @@ export default function VenueRegistrationForm({ onClose }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Submitting Venue:", formData);
+    yu;
     // TODO: Add API call
   };
 
