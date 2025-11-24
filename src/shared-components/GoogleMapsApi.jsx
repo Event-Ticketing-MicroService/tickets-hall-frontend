@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 const GoogleMaps = ({
-  radius = 1000,
+  radius = 0,
   setLatitude,
   setlongitude,
   latitude,

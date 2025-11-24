@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ImageDD from "../venueDashboard/components/ImageDD";
 import ShinyText from "../../shared-components/ShinyText";
-import { data } from "react-router-dom";
+import GoogleMaps from "../../shared-components/GoogleMapsApi"; // import the same map component
 
 export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
   const [formData, setFormData] = useState({
@@ -21,6 +21,10 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
   });
 
   const [selectedImages, setSelectedImages] = useState([]);
+  const [longitude, setlongitude] = useState(54.979021);
+  const [latitude, setLatitude] = useState(24.799448);
+  const [address, setAddress] = useState("");
+  const [isMapOpen, setIsMapOpen] = useState(false);
 
   useEffect(() => {
     const now = new Date();
@@ -43,7 +47,7 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // prevent page reload
+    e.preventDefault();
     console.log("Submitting event:", formData);
     // TODO: send formData to backend API
   };
@@ -53,7 +57,6 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-start z-50 pt-20">
       <div className="bg-white rounded-lg shadow-lg w-[90%] sm:w-[650px] p-6 relative max-h-[90vh] overflow-y-auto">
-        {/* Close Button */}
         <button
           onClick={() => SetCreateNewEvent(false)}
           className="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-6xl hover:cursor-pointer"
@@ -61,7 +64,6 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
           &times;
         </button>
 
-        {/* Modal Title */}
         <ShinyText
           text={"Create New Event"}
           className="font-bold text-4xl pb-5"
@@ -69,7 +71,6 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
         />
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {/* Category */}
           <label className="text-gray-700 font-bold">Category *</label>
           <select
             name="category"
@@ -86,7 +87,6 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
             <option value="festival">Festival</option>
           </select>
 
-          {/* Event Name */}
           <label className="text-gray-700 font-bold">Event Name *</label>
           <input
             type="text"
@@ -98,7 +98,6 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
             required
           />
 
-          {/* Description */}
           <label className="text-gray-700 font-bold">Description *</label>
           <textarea
             name="description"
@@ -110,7 +109,6 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
             required
           ></textarea>
 
-          {/* Location */}
           <label className="text-gray-700 font-bold">Location *</label>
           <input
             type="text"
@@ -122,42 +120,40 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
             required
           />
 
-          {/* Latitude & Longitude */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-gray-700 font-bold">Latitude</label>
-              <input
-                type="number"
-                name="latitude"
-                value={formData.latitude}
-                onChange={handleChange}
-                placeholder="Latitude"
-                className="border rounded-md p-2 focus:outline-blue-500"
-                step="any"
-              />
-            </div>
-            <div>
-              <label className="text-gray-700 font-bold">Longitude</label>
-              <input
-                type="number"
-                name="longitude"
-                value={formData.longitude}
-                onChange={handleChange}
-                placeholder="Longitude"
-                className="border rounded-md p-2 focus:outline-blue-500"
-                step="any"
-              />
-            </div>
-          </div>
+          <button
+            className="rounded-full bg-blue-700 hover:bg-blue-900 hover:cursor-pointer p-3 text-white font-bold"
+            onClick={() => {
+              setIsMapOpen(true);
+            }}
+          >
+            Choose location on map📍
+          </button>
 
-          {/* Background Image Upload */}
+          {isMapOpen && (
+            <GoogleMaps
+              address={address}
+              setAddress={setAddress}
+              radius={formData.radius}
+              latitude={latitude}
+              longitude={longitude}
+              setLatitude={(lat) => {
+                setLatitude(lat);
+                setFormData((prev) => ({ ...prev, venueLatitude: lat }));
+              }}
+              setlongitude={(lng) => {
+                setlongitude(lng);
+                setFormData((prev) => ({ ...prev, venueLongitude: lng }));
+              }}
+              onCloseMap={() => setIsMapOpen(false)}
+            />
+          )}
+
           <label className="text-gray-700 font-bold">Background Image</label>
           <ImageDD
             selectedImage={selectedImages}
             setSelectedImage={setSelectedImages}
           />
 
-          {/* Background Image URL */}
           <input
             type="url"
             name="backgroundImageUrl"
@@ -167,8 +163,7 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
             className="border rounded-md p-2 focus:outline-blue-500"
           />
 
-          {/* Starts & Ends At */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-rows-2 md:grid-cols-2 gap-3">
             <div>
               <label className="text-gray-700 font-bold">Starts At *</label>
               <input
@@ -193,7 +188,6 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
             </div>
           </div>
 
-          {/* Total Available Tickets */}
           <label className="text-gray-700 font-bold">
             Total Available Tickets *
           </label>
@@ -207,7 +201,6 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
             required
           />
 
-          {/* Submit Button */}
           <button
             type="submit"
             className="bg-blue-600 text-white font-medium rounded-md py-2 mt-2 hover:bg-blue-700 transition"
