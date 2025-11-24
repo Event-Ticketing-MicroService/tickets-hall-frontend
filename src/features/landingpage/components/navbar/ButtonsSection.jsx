@@ -9,7 +9,7 @@ export default function LinksSection({ onLoginClick, onNewVenueClick }) {
       <Link
         // to="/attendee/events"
         onClick={onNewVenueClick}
-        className="whitespace-nowrap hover:cursor-pointer p-1.5 text-xs md:px-3 py-1 md:text-sm font-medium border-2 border-blue-700 rounded-lg text-blue-700 bg-white hover:bg-blue-100"
+        className="whitespace-nowrap hover:cursor-pointer p-1.5 text-xs md:px-3 md:text-sm font-medium border-2 border-blue-700 rounded-lg text-blue-700 bg-white hover:bg-blue-100"
       >
         I'm an Attendee
       </Link>
