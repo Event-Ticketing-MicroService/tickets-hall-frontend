@@ -9,7 +9,6 @@ export const fetchEvents = async ({queryKey}) => {
   if(searchTerm?.trim()) params.append("name" , searchTerm.trim());
   if (selectedCategory?.trim()) params.append("categoryIds", selectedCategory.trim());
   if (selectedDate) {
-    // create YYYY-MM-DDTHH:mm:ss.SSS (no Z)
     const date = new Date(selectedDate);
     const localISO = date.toISOString().slice(0, 23);
     params.append("startsAt", localISO);
@@ -28,5 +27,18 @@ export const fetchEventById = async (id) => {
   if (!response.ok) {
     throw new Error("Failed to fetch event");
   }
+  return response.json();
+};
+
+export const createEvent = async (eventData)=>{
+  const response = await fetch(`${API_BASE_URL}/events`,{
+     method: "POST", // <-- specify POST
+    headers: {
+      "Content-Type": "application/json", // tell backend it’s JSON
+    },
+    credentials: "include", // if your backend uses allowCredentials
+    body: JSON.stringify(eventData), // send the data
+  })
+  if (!response.ok) throw new Error("Failed to create event");
   return response.json();
 };

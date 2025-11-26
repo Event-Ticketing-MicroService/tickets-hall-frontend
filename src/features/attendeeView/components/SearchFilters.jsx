@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "flowbite-react";
 import React from "react";
-import { fetchCategories } from "../services/categoryService";
+import { fetchCategories } from "../../../services/categoryService";
 
 export default function EventsList({
   selectedCategory,

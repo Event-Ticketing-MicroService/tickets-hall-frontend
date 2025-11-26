@@ -1,6 +1,9 @@
 import React from "react";
 
-export default function VenueDashboardHeader({ SetCreateNewEvent }) {
+export default function VenueDashboardHeader({
+  SetCreateNewEvent,
+  setAddNewWorkers,
+}) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
       <div class="mb-6">
@@ -13,13 +16,22 @@ export default function VenueDashboardHeader({ SetCreateNewEvent }) {
               Downtown Manhattan, NY
             </p>
           </div>
-          <button
-            type="button"
-            class="font-medium rounded-lg transition-colors duration-200 whitespace-nowrap cursor-pointer bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-300 px-4 py-2 text-base w-full sm:w-auto"
-            onClick={() => SetCreateNewEvent(true)}
-          >
-            <i class="ri-add-line mr-2">+</i>Create New Event
-          </button>
+          <div className="flex flex-row gap-2.5 md:gap-4">
+            <button
+              type="button"
+              class="font-medium rounded-lg transition-colors duration-200 p-2 md:whitespace-nowrap cursor-pointer bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-300 md:px-4 md:py-2 text-base md:w-full sm:w-auto"
+              onClick={() => SetCreateNewEvent(true)}
+            >
+              <i class="ri-add-line mr-2">+</i>Create New Event
+            </button>
+            <button
+              type="button"
+              class="font-medium rounded-lg transition-colors duration-200 md:whitespace-nowrap cursor-pointer bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-300 md:px-4 md:py-2 text-base md:w-full sm:w-auto"
+              onClick={() => setAddNewWorkers(true)}
+            >
+              <i class="ri-add-line mr-2">+</i>Add Venue Workers
+            </button>
+          </div>
         </div>
       </div>
     </div>

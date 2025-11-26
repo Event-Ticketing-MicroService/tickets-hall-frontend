@@ -1,55 +1,85 @@
 import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchCategories } from "../../services/categoryService";
+import { createEvent } from "../../services/eventService";
 import ImageDD from "../venueDashboard/components/ImageDD";
 import ShinyText from "../../shared-components/ShinyText";
-import GoogleMaps from "../../shared-components/GoogleMapsApi"; // import the same map component
+import GoogleMaps from "../../shared-components/GoogleMapsApi";
+import Spinner from "../../shared-components/Spinner";
 
 export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
   const [formData, setFormData] = useState({
-    category: "",
+    categoryId: "",
     name: "",
     description: "",
     location: "",
-    latitude: "",
-    longitude: "",
-    backgroundImageUrl: "",
-    isPublished: false,
-    publishedAt: "",
+    venueLatitude: "",
+    venueLongitude: "",
     startsAt: "",
     endsAt: "",
     totalAvailableTickets: "",
-    createdAt: "",
+    backgroundImage: null, // store File object
   });
 
   const [selectedImages, setSelectedImages] = useState([]);
-  const [longitude, setlongitude] = useState(54.979021);
+  const [longitude, setLongitude] = useState(54.979021);
   const [latitude, setLatitude] = useState(24.799448);
   const [address, setAddress] = useState("");
   const [isMapOpen, setIsMapOpen] = useState(false);
 
-  useEffect(() => {
-    const now = new Date();
-    const currentDate = now.toISOString().split("T")[0];
-    const currentTime = now.toTimeString().split(" ")[0];
-
-    setFormData((prev) => ({
-      ...prev,
-      publishedAt: currentDate,
-      createdAt: currentTime,
-    }));
-  }, []);
+  // Fetch categories
+  const {
+    data: categoriesData,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+  });
+  const categories = categoriesData?.data || [];
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleImageUpload = (images) => {
+    setFormData((prev) => ({
+      ...prev,
+      backgroundImage: images[0] || null, // File object
+    }));
+    setSelectedImages(images);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting event:", formData);
-    // TODO: send formData to backend API
+
+    const fd = new FormData();
+    fd.append("categoryId", formData.categoryId);
+    fd.append("name", formData.name);
+    fd.append("description", formData.description);
+    fd.append("location", formData.location);
+    fd.append("latitude", formData.venueLatitude);
+    fd.append("longitude", formData.venueLongitude);
+    fd.append("startsAt", formData.startsAt);
+    fd.append("endsAt", formData.endsAt);
+    fd.append("totalAvailableTickets", formData.totalAvailableTickets);
+
+    if (formData.backgroundImage) {
+      fd.append("backgroundImage", formData.backgroundImage);
+    }
+
+    try {
+      await createEvent(fd);
+      SetCreateNewEvent(false);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create event");
+    }
   };
 
   if (!createNewEvent) return null;
@@ -71,22 +101,34 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
         />
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* Category */}
           <label className="text-gray-700 font-bold">Category *</label>
-          <select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            className="border rounded-md p-2 focus:outline-blue-500"
-            required
-          >
-            <option value="">Select category</option>
-            <option value="music">Music</option>
-            <option value="conference">Conference</option>
-            <option value="sports">Sports</option>
-            <option value="theatre">Theatre</option>
-            <option value="festival">Festival</option>
-          </select>
+          {isLoading ? (
+            <div className="w-full items-center justify-center flex">
+              <Spinner className="mx-auto" />
+            </div>
+          ) : isError ? (
+            <p className="text-red-500">
+              Error loading categories: {error.message}
+            </p>
+          ) : (
+            <select
+              name="categoryId"
+              value={formData.categoryId}
+              onChange={handleChange}
+              className="border rounded-md p-2 focus:outline-blue-500"
+              required
+            >
+              <option value="">Select category</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          )}
 
+          {/* Name */}
           <label className="text-gray-700 font-bold">Event Name *</label>
           <input
             type="text"
@@ -98,6 +140,7 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
             required
           />
 
+          {/* Description */}
           <label className="text-gray-700 font-bold">Description *</label>
           <textarea
             name="description"
@@ -107,8 +150,9 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
             className="border rounded-md p-2 focus:outline-blue-500 resize-none"
             rows="3"
             required
-          ></textarea>
+          />
 
+          {/* Location */}
           <label className="text-gray-700 font-bold">Location *</label>
           <input
             type="text"
@@ -119,12 +163,10 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
             className="border rounded-md p-2 focus:outline-blue-500"
             required
           />
-
           <button
+            type="button"
             className="rounded-full bg-blue-700 hover:bg-blue-900 hover:cursor-pointer p-3 text-white font-bold"
-            onClick={() => {
-              setIsMapOpen(true);
-            }}
+            onClick={() => setIsMapOpen(true)}
           >
             Choose location on map📍
           </button>
@@ -133,7 +175,6 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
             <GoogleMaps
               address={address}
               setAddress={setAddress}
-              radius={formData.radius}
               latitude={latitude}
               longitude={longitude}
               setLatitude={(lat) => {
@@ -141,28 +182,22 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
                 setFormData((prev) => ({ ...prev, venueLatitude: lat }));
               }}
               setlongitude={(lng) => {
-                setlongitude(lng);
+                setLongitude(lng);
                 setFormData((prev) => ({ ...prev, venueLongitude: lng }));
               }}
               onCloseMap={() => setIsMapOpen(false)}
             />
           )}
 
-          <label className="text-gray-700 font-bold">Background Image</label>
+          {/* Background Image */}
+          <label className="text-gray-700 font-bold">Background Image *</label>
           <ImageDD
             selectedImage={selectedImages}
             setSelectedImage={setSelectedImages}
+            onUpload={handleImageUpload}
           />
 
-          <input
-            type="url"
-            name="backgroundImageUrl"
-            value={formData.backgroundImageUrl}
-            onChange={handleChange}
-            placeholder="https://example.com/image.jpg"
-            className="border rounded-md p-2 focus:outline-blue-500"
-          />
-
+          {/* Dates */}
           <div className="grid grid-rows-2 md:grid-cols-2 gap-3">
             <div>
               <label className="text-gray-700 font-bold">Starts At *</label>
@@ -188,6 +223,7 @@ export default function CreateNewEvent({ createNewEvent, SetCreateNewEvent }) {
             </div>
           </div>
 
+          {/* Total Tickets */}
           <label className="text-gray-700 font-bold">
             Total Available Tickets *
           </label>

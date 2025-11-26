@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 
-export default function ImageDD({ selectedImage, setSelectedImage }) {
+export default function ImageDD({ onUpload }) {
   const { getRootProps, getInputProps, acceptedFiles } = useDropzone({
     accept: { "image/*": [] },
     maxFiles: 5,
-    onDrop: (files) => setSelectedImage(files), // update parent state
+    onDrop: (files) => onUpload(files), // use onUpload instead of setSelectedImage
   });
 
-  // optional: reset URL objects to avoid memory leaks
+  // optional cleanup
   useEffect(() => {
     return () =>
       acceptedFiles.forEach((file) => URL.revokeObjectURL(file.preview));

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "flowbite-react";
 import React from "react";
-import { fetchEvents } from "../services/eventService";
+import { fetchEvents } from "../../../services/eventService";
 
 export default function EventsList({
   selectedDate,

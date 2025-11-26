@@ -1,6 +1,7 @@
 import React, { use, useState } from "react";
 import ImageDD from "../venueDashboard/components/ImageDD";
 import GoogleMaps from "../../shared-components/GoogleMapsApi";
+import { createVenue } from "../../services/venueService";
 
 export default function VenueRegistrationForm({ onClose }) {
   const [formData, setFormData] = useState({
@@ -19,6 +20,8 @@ export default function VenueRegistrationForm({ onClose }) {
     venueWorkers: [{ fullName: "", username: "", email: "" }],
   });
 
+  const [IsSuccess, setIsSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [longitude, setlongitude] = useState(54.979021);
   const [latitude, setLatitude] = useState(24.799448);
   const [address, setAddress] = useState("");
@@ -55,13 +58,63 @@ export default function VenueRegistrationForm({ onClose }) {
     setFormData((prev) => ({ ...prev, venueWorkers: updated }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting Venue:", formData);
-    yu;
-    // TODO: Add API call
-  };
 
+    setIsSubmitting(true);
+    setIsSuccess(false);
+
+    try {
+      // Construct the JSON object expected by your backend
+      const dto = {
+        venueName: formData.venueName,
+        venueAddress: formData.venueAddress,
+        venuePhone: formData.venuePhone,
+        venueEmail: formData.venueEmail,
+        password: formData.password,
+        venueCapacity: Number(formData.venueCapacity),
+        venueDescription: formData.venueDescription,
+        venueCountry: formData.venueCountry,
+
+        venueWorkers: formData.venueWorkers.map((w) => ({
+          fullName: w.fullName,
+          email: w.email,
+          password: w.password || "TempPass123!", // if needed
+        })),
+      };
+
+      // Create multipart form-data
+      const form = new FormData();
+
+      // Part 1 → Image
+      if (formData.venueImages && formData.venueImages.length > 0) {
+        const file = formData.venueImages[0];
+        console.log("Appending file:", file.name, file.type, file.size);
+        form.append("image", file, file.name);
+      }
+
+      // Part 2 → JSON ("data")
+      form.append("data", JSON.stringify(dto));
+
+      console.log("FINAL MULTIPART PAYLOAD:");
+      console.log("IMAGE:", formData.venueImages[0]);
+      console.log("DATA:", dto);
+
+      // Send multipart form to backend
+      await createVenue(form);
+
+      setIsSuccess(true);
+      setTimeout(() => {
+        setIsSuccess(false);
+        onClose();
+      }, 2000);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create venue");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="relative bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg max-h-[90vh] overflow-y-auto w-full max-w-4xl">
