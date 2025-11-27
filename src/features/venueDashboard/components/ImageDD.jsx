@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 
-export default function ImageDD({ onUpload }) {
+export default function ImageDD({ onImageSelected }) {
   const { getRootProps, getInputProps, acceptedFiles } = useDropzone({
     accept: { "image/*": [] },
     maxFiles: 5,
-    onDrop: (files) => onUpload(files), // use onUpload instead of setSelectedImage
+    onDrop: (files) => onImageSelected(files), // use onImageSelected instead of setSelectedImage
   });
 
   // optional cleanup

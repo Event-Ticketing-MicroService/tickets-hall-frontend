@@ -4,11 +4,13 @@ import ButtonsSection from "./ButtonsSection";
 import HamburgerMenu from "./HamburgerMenu";
 import LoginForm from "../../../Forms/LoginForm";
 import VenueRegistrationForm from "../../../Forms/VenueRegistrationForm";
+import AttendeeForm from "../../../Forms/AttendeeForm";
 
 export default function LandingPageNavBar() {
   const [showLogin, setShowLogin] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const [showAttendeeForm, setShowAttendeeForm] = useState(false);
 
   useEffect(() => {
     const sections = document.querySelectorAll("section");
@@ -82,12 +84,16 @@ export default function LandingPageNavBar() {
         <ButtonsSection
           onLoginClick={() => setShowLogin(true)}
           onNewVenueClick={() => setShowRegistrationForm(true)}
+          onNewAttendeeClick={() => setShowAttendeeForm(true)}
         />
         {showLogin && <LoginForm onClose={() => setShowLogin(false)} />}
         {showRegistrationForm && (
           <VenueRegistrationForm
             onClose={() => setShowRegistrationForm(false)}
           />
+        )}
+        {showAttendeeForm && (
+          <AttendeeForm onClose={() => setShowAttendeeForm(false)} />
         )}
         <HamburgerMenu />
       </div>

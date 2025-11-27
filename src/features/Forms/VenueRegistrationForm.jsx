@@ -87,17 +87,15 @@ export default function VenueRegistrationForm({ onClose }) {
       const form = new FormData();
 
       // Part 1 → Image
-      if (formData.venueImages && formData.venueImages.length > 0) {
-        const file = formData.venueImages[0];
-        console.log("Appending file:", file.name, file.type, file.size);
-        form.append("image", file, file.name);
+      if (formData.venueImages) {
+        form.append("image", formData.venueImages);
       }
 
       // Part 2 → JSON ("data")
       form.append("data", JSON.stringify(dto));
 
       console.log("FINAL MULTIPART PAYLOAD:");
-      console.log("IMAGE:", formData.venueImages[0]);
+      console.log("IMAGE:", formData.venueImages);
       console.log("DATA:", dto);
 
       // Send multipart form to backend

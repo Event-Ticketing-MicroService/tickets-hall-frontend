@@ -1,12 +1,12 @@
-const API_BASE_URL = "http://localhost:8080/api" 
+const API_BASE_URL = "http://localhost:8083/api"
 
-export const fetchEvents = async ({queryKey}) => {
+export const fetchEvents = async ({ queryKey }) => {
 
   const [_key, selectedCategory, selectedDate, searchTerm] = queryKey;
 
   const params = new URLSearchParams();
-  
-  if(searchTerm?.trim()) params.append("name" , searchTerm.trim());
+
+  if (searchTerm?.trim()) params.append("name", searchTerm.trim());
   if (selectedCategory?.trim()) params.append("categoryIds", selectedCategory.trim());
   if (selectedDate) {
     const date = new Date(selectedDate);
@@ -30,9 +30,9 @@ export const fetchEventById = async (id) => {
   return response.json();
 };
 
-export const createEvent = async (eventData)=>{
-  const response = await fetch(`${API_BASE_URL}/events`,{
-     method: "POST", // <-- specify POST
+export const createEvent = async (eventData) => {
+  const response = await fetch(`${API_BASE_URL}/events`, {
+    method: "POST", // <-- specify POST
     headers: {
       "Content-Type": "application/json", // tell backend it’s JSON
     },
